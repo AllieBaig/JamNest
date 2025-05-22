@@ -6,30 +6,35 @@
   <meta name="theme-color" content="#1a1a1a" />
   <title>JamNest</title>
 
-  <!-- PWA -->
+  <!-- Favicon (optional) -->
+  <link rel="icon" href="assets/icons/icon-192.png" type="image/png" />
+
+  <!-- PWA Manifest -->
   <link rel="manifest" href="manifest.json" />
 
-  <!-- Styles (modular if split, otherwise just main.css) -->
+  <!-- CSS Modules -->
   <link rel="stylesheet" href="styles/main.css" />
-
-  <!-- Optional dark theme override -->
   <link rel="stylesheet" href="styles/dark.css" media="(prefers-color-scheme: dark)" />
+
+  <!-- Optional meta for Apple PWA support -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="JamNest" />
 </head>
 <body>
 
-  <!-- NAVIGATION / MODE SWITCHER -->
+  <!-- Navigation (Mode Switcher) -->
   <nav role="navigation" aria-label="Main Navigation">
-    <button data-mode="default">Playlist Mode</button>
+    <button data-mode="playlist">Playlist Manager</button>
     <button data-mode="subliminal">Subliminal Mode</button>
     <button id="toggle-theme">Dark / Light</button>
   </nav>
 
-  <!-- MAIN APP VIEWPORT -->
+  <!-- Main App Container -->
   <main id="app" aria-live="polite" tabindex="-1">
     <p>Loading JamNest...</p>
   </main>
 
-  <!-- FOOTER -->
+  <!-- Footer -->
   <footer>
     <small>
       JamNest v1.0 —
@@ -37,7 +42,7 @@
     </small>
   </footer>
 
-  <!-- SCRIPTS -->
+  <!-- Entry Point JS (Modular) -->
   <script type="module" src="scripts/main.js"></script>
 
 </body>
