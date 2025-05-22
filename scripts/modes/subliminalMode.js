@@ -1,29 +1,22 @@
-
-
 export function init(container) {
-  const html = `
-    <section>
-      <h2>JamNest: Subliminal Audio Mixer</h2>
-
+  container.innerHTML = `
+    <section aria-labelledby="subliminal-title">
+      <h2 id="subliminal-title">Subliminal Mixer Mode</h2>
       <div class="mixer">
         <div>
-          <label>Masking Track (e.g. white noise)
-            <input type="file" accept="audio/*" id="maskInput" />
-          </label>
+          <label for="maskInput">Masking Track</label>
+          <input type="file" id="maskInput" accept="audio/*" />
           <audio id="maskPlayer" loop></audio>
-          <label>Volume
-            <input type="range" min="0" max="1" step="0.01" id="maskVolume" />
-          </label>
+          <label for="maskVolume">Volume</label>
+          <input type="range" id="maskVolume" min="0" max="1" step="0.01" value="0.5" />
         </div>
 
         <div>
-          <label>Subliminal Track
-            <input type="file" accept="audio/*" id="subInput" />
-          </label>
+          <label for="subInput">Subliminal Track</label>
+          <input type="file" id="subInput" accept="audio/*" />
           <audio id="subPlayer" loop></audio>
-          <label>Volume
-            <input type="range" min="0" max="1" step="0.01" id="subVolume" />
-          </label>
+          <label for="subVolume">Volume</label>
+          <input type="range" id="subVolume" min="0" max="1" step="0.01" value="0.5" />
         </div>
       </div>
 
@@ -34,12 +27,11 @@ export function init(container) {
     </section>
   `;
 
-  container.innerHTML = html;
-
   const maskInput = document.getElementById('maskInput');
   const subInput = document.getElementById('subInput');
   const maskPlayer = document.getElementById('maskPlayer');
   const subPlayer = document.getElementById('subPlayer');
+
   const maskVolume = document.getElementById('maskVolume');
   const subVolume = document.getElementById('subVolume');
 
@@ -70,11 +62,5 @@ export function init(container) {
     maskPlayer.pause();
     subPlayer.pause();
   });
-
-  // Set default volumes
-  maskVolume.value = 0.5;
-  subVolume.value = 0.5;
-  maskPlayer.volume = 0.5;
-  subPlayer.volume = 0.5;
 }
 
