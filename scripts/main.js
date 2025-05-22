@@ -1,7 +1,6 @@
-
-
 import { initTheme } from './utils/themeToggle.js';
 import { registerSW } from './utils/serviceWorkerHelper.js';
+import { initFontControls } from './utils/fontControl.js';
 
 const modeButtons = document.querySelectorAll('[data-mode]');
 const app = document.getElementById('app');
@@ -18,7 +17,7 @@ function loadMode(modeName) {
     });
 }
 
-// Event listeners
+// Events
 modeButtons.forEach(btn => {
   btn.addEventListener('click', () => {
     const mode = btn.dataset.mode;
@@ -28,6 +27,7 @@ modeButtons.forEach(btn => {
 
 document.getElementById('toggle-theme').addEventListener('click', () => {
   document.body.classList.toggle('dark');
+  localStorage.setItem('theme', document.body.classList.contains('dark') ? 'dark' : 'light');
 });
 
 document.getElementById('reset-sw').addEventListener('click', () => {
@@ -40,6 +40,6 @@ document.getElementById('reset-sw').addEventListener('click', () => {
 // Init
 initTheme();
 registerSW();
+initFontControls();
 loadMode('default');
-
 
