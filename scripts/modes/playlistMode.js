@@ -1,18 +1,28 @@
+// MIT License
+// Copyright (c) 2025 AllieBaig
+// https://github.com/AllieBaig/JamNest/blob/main/LICENSE
+
 export function init(container) {
+  if (/iPhone|iPad|iPod/.test(navigator.userAgent) && !localStorage.getItem('jamnest-ios-tip')) {
+    alert("On iPhone: Tap 'Choose Files' to select audio from the Files app (like On My iPhone or iCloud Drive).");
+    localStorage.setItem('jamnest-ios-tip', 'shown');
+  }
+
   container.innerHTML = `
     <section aria-labelledby="playlist-title">
-      <h2 id="playlist-title">JamNest: Dual Audio + Playlist</h2>
+      <h2 id="playlist-title">JamNest: Playlist + Background Audio</h2>
 
       <div class="players">
         <div>
           <label for="playlistInput">Playlist (Track A)</label>
-          <input type="file" accept="audio/*,.mp3,.m4a,.aac,.wav" id="playlistInput" multiple />
+          <input type="file" id="playlistInput" multiple accept="audio/*,.mp3,.m4a,.aac,.wav,.flac" />
+          <div id="dropZone" class="drop-zone" tabindex="0">or drag audio files here</div>
           <ul id="playlist" class="playlist" aria-label="Playlist"></ul>
         </div>
 
         <div>
-          <label for="maskInput">Background (Track B)</label>
-          <input type="file" accept="audio/*,.mp3,.m4a,.aac,.wav" id="maskInput" />
+          <label for="maskInput">Background Track (Track B)</label>
+          <input type="file" id="maskInput" accept="audio/*,.mp3,.m4a,.aac,.wav" />
           <audio id="maskPlayer" controls loop style="width:100%;margin-top:1rem;"></audio>
         </div>
       </div>
@@ -21,6 +31,9 @@ export function init(container) {
         <button id="playNext">Play Next</button>
         <button id="stopAll">Stop</button>
         <button id="clearPlaylist">Clear Playlist</button>
+        <button id="exportPlaylist">Export Playlist</button>
+        <input type="file" id="importPlaylist" accept=".json" hidden />
+        <button id="triggerImport">Import Playlist</button>
       </div>
 
       <audio id="playlistPlayer" controls style="width:100%;margin-top:1rem;"></audio>
@@ -31,6 +44,7 @@ export function init(container) {
   const maskKey = 'jamnest-mask';
 
   const input = document.getElementById('playlistInput');
+  const dropZone = document.getElementById('dropZone');
   const list = document.getElementById('playlist');
   const player = document.getElementById('playlistPlayer');
   const maskInput = document.getElementById('maskInput');
@@ -39,6 +53,9 @@ export function init(container) {
   const playNextBtn = document.getElementById('playNext');
   const stopBtn = document.getElementById('stopAll');
   const clearBtn = document.getElementById('clearPlaylist');
+  const exportBtn = document.getElementById('exportPlaylist');
+  const importBtn = document.getElementById('importPlaylist');
+  const triggerImportBtn = document.getElementById('triggerImport');
 
   const tracks = [];
 
@@ -77,16 +94,44 @@ export function init(container) {
     list.innerHTML = '';
     tracks.forEach((track, i) => {
       const li = document.createElement('li');
-      li.textContent = `${i + 1}. ${track.name}`;
       li.setAttribute('draggable', 'true');
       li.setAttribute('data-index', i);
       li.setAttribute('tabindex', 0);
       li.setAttribute('role', 'button');
 
-      li.addEventListener('click', () => {
+      const nameSpan = document.createElement('span');
+      nameSpan.textContent = `${i + 1}. ${track.name}`;
+      nameSpan.style.cursor = 'pointer';
+
+      nameSpan.addEventListener('click', () => {
         player.src = track.url;
         player.play();
       });
+
+      nameSpan.addEventListener('dblclick', () => {
+        const input = document.createElement('input');
+        input.type = 'text';
+        input.value = track.name;
+        input.autofocus = true;
+        input.style.width = '100%';
+
+        input.addEventListener('blur', saveName);
+        input.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') input.blur();
+        });
+
+        function saveName() {
+          track.name = input.value.trim() || track.name;
+          savePlaylist();
+          renderPlaylist();
+        }
+
+        li.innerHTML = '';
+        li.appendChild(input);
+        input.focus();
+      });
+
+      li.appendChild(nameSpan);
 
       li.addEventListener('dragstart', (e) => {
         e.dataTransfer.setData('text/plain', i);
@@ -119,8 +164,30 @@ export function init(container) {
   }
 
   input.addEventListener('change', () => {
-    const files = [...input.files];
-    files.forEach(file => {
+    [...input.files].forEach(file => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        tracks.push({ name: file.name, url: reader.result, dataUrl: reader.result });
+        renderPlaylist();
+        savePlaylist();
+      };
+      reader.readAsDataURL(file);
+    });
+  });
+
+  dropZone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropZone.classList.add('drag-over');
+  });
+
+  dropZone.addEventListener('dragleave', () => {
+    dropZone.classList.remove('drag-over');
+  });
+
+  dropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropZone.classList.remove('drag-over');
+    [...e.dataTransfer.files].filter(f => f.type.startsWith('audio/')).forEach(file => {
       const reader = new FileReader();
       reader.onload = () => {
         tracks.push({ name: file.name, url: reader.result, dataUrl: reader.result });
@@ -134,7 +201,6 @@ export function init(container) {
   maskInput.addEventListener('change', () => {
     const file = maskInput.files[0];
     if (!file) return;
-
     const reader = new FileReader();
     reader.onload = () => {
       maskPlayer.src = reader.result;
@@ -155,6 +221,8 @@ export function init(container) {
     }
   }
 
+  player.addEventListener('ended', playNextTrack);
+
   stopBtn.addEventListener('click', () => {
     player.pause();
     player.currentTime = 0;
@@ -171,7 +239,45 @@ export function init(container) {
     maskPlayer.removeAttribute('src');
   });
 
-  player.addEventListener('ended', playNextTrack); // AUTO-ADVANCE
+  exportBtn.addEventListener('click', () => {
+    if (!tracks.length) return alert('No playlist to export.');
+    const data = {
+      version: '1.0',
+      savedAt: new Date().toISOString(),
+      tracks: tracks.map(({ name, dataUrl }) => ({ name, dataUrl }))
+    };
+    const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'jamnest-playlist.json';
+    a.click();
+  });
+
+  triggerImportBtn.addEventListener('click', () => {
+    importBtn.click();
+  });
+
+  importBtn.addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => {
+      try {
+        const { tracks: imported } = JSON.parse(reader.result);
+        if (!Array.isArray(imported)) throw new Error('Invalid format');
+        imported.forEach(({ name, dataUrl }) => {
+          tracks.push({ name, url: dataUrl, dataUrl });
+        });
+        renderPlaylist();
+        savePlaylist();
+        alert('Playlist imported successfully.');
+      } catch {
+        alert('Invalid playlist file.');
+      }
+    };
+    reader.readAsText(file);
+  });
+
   loadPlaylist();
   loadMaskTrack();
 }
