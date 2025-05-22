@@ -6,30 +6,41 @@
   <meta name="theme-color" content="#1a1a1a" />
   <title>JamNest</title>
 
-  <!-- Favicon (optional) -->
-  <link rel="icon" href="assets/icons/icon-192.png" type="image/png" />
-
   <!-- PWA Manifest -->
   <link rel="manifest" href="manifest.json" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-title" content="JamNest" />
 
-  <!-- CSS Modules -->
+  <!-- Icons -->
+  <link rel="icon" href="assets/icons/icon-192.png" sizes="192x192" />
+  <link rel="apple-touch-icon" href="assets/icons/icon-512.png" />
+
+  <!-- Styles -->
   <link rel="stylesheet" href="styles/main.css" />
   <link rel="stylesheet" href="styles/dark.css" media="(prefers-color-scheme: dark)" />
 
-  <!-- Optional meta for Apple PWA support -->
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-title" content="JamNest" />
+  <!-- Accessibility Helpers -->
+  <style>
+    .sr-only {
+      position: absolute;
+      left: -9999px;
+      top: auto;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+    }
+  </style>
 </head>
 <body>
 
   <!-- Navigation (Mode Switcher) -->
-  <nav role="navigation" aria-label="Main Navigation">
+  <nav role="navigation" aria-label="Main navigation">
     <button data-mode="playlist">Playlist Manager</button>
     <button data-mode="subliminal">Subliminal Mode</button>
     <button id="toggle-theme">Dark / Light</button>
   </nav>
 
-  <!-- Main App Container -->
+  <!-- App Mount Point -->
   <main id="app" aria-live="polite" tabindex="-1">
     <p>Loading JamNest...</p>
   </main>
@@ -38,13 +49,12 @@
   <footer>
     <small>
       JamNest v1.0 —
-      <button id="reset-sw" aria-label="Reset Service Worker">Reset SW</button>
+      <button id="reset-sw" aria-label="Reset service worker">Reset SW</button>
     </small>
   </footer>
 
-  <!-- Entry Point JS (Modular) -->
+  <!-- Entry Script -->
   <script type="module" src="scripts/main.js"></script>
-
 </body>
 </html>
 
