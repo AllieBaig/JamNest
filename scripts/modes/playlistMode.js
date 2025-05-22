@@ -1,7 +1,3 @@
-// MIT License
-// Copyright (c) 2025 AllieBaig
-// https://github.com/AllieBaig/JamNest/blob/main/LICENSE
-
 export function init(container) {
   container.innerHTML = `
     <section aria-labelledby="playlist-title">
@@ -31,6 +27,9 @@ export function init(container) {
     </section>
   `;
 
+  const playlistKey = 'jamnest-playlist';
+  const maskKey = 'jamnest-mask';
+
   const input = document.getElementById('playlistInput');
   const list = document.getElementById('playlist');
   const player = document.getElementById('playlistPlayer');
@@ -41,16 +40,15 @@ export function init(container) {
   const stopBtn = document.getElementById('stopAll');
   const clearBtn = document.getElementById('clearPlaylist');
 
-  const PLAYLIST_KEY = 'jamnest-playlist';
   const tracks = [];
 
   function savePlaylist() {
     const raw = tracks.map(t => ({ name: t.name, dataUrl: t.dataUrl }));
-    localStorage.setItem(PLAYLIST_KEY, JSON.stringify(raw));
+    localStorage.setItem(playlistKey, JSON.stringify(raw));
   }
 
   function loadPlaylist() {
-    const saved = localStorage.getItem(PLAYLIST_KEY);
+    const saved = localStorage.getItem(playlistKey);
     if (!saved) return;
     try {
       const items = JSON.parse(saved);
@@ -60,6 +58,18 @@ export function init(container) {
       renderPlaylist();
     } catch (e) {
       console.error('Failed to load playlist:', e);
+    }
+  }
+
+  function saveMaskTrack(dataUrl) {
+    localStorage.setItem(maskKey, dataUrl);
+  }
+
+  function loadMaskTrack() {
+    const saved = localStorage.getItem(maskKey);
+    if (saved) {
+      maskPlayer.src = saved;
+      maskPlayer.play();
     }
   }
 
@@ -100,6 +110,69 @@ export function init(container) {
           const [moved] = tracks.splice(fromIndex, 1);
           tracks.splice(toIndex, 0, moved);
           renderPlaylist();
-         
-        
-        
+          savePlaylist();
+        }
+      });
+
+      list.appendChild(li);
+    });
+  }
+
+  input.addEventListener('change', () => {
+    const files = [...input.files];
+    files.forEach(file => {
+      const reader = new FileReader();
+      reader.onload = () => {
+        tracks.push({ name: file.name, url: reader.result, dataUrl: reader.result });
+        renderPlaylist();
+        savePlaylist();
+      };
+      reader.readAsDataURL(file);
+    });
+  });
+
+  maskInput.addEventListener('change', () => {
+    const file = maskInput.files[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      maskPlayer.src = reader.result;
+      maskPlayer.play();
+      saveMaskTrack(reader.result);
+    };
+    reader.readAsDataURL(file);
+  });
+
+  playNextBtn.addEventListener('click', playNextTrack);
+
+  function playNextTrack() {
+    const currentIndex = tracks.findIndex(t => t.url === player.src);
+    const next = tracks[currentIndex + 1];
+    if (next) {
+      player.src = next.url;
+      player.play();
+    }
+  }
+
+  stopBtn.addEventListener('click', () => {
+    player.pause();
+    player.currentTime = 0;
+    maskPlayer.pause();
+    maskPlayer.currentTime = 0;
+  });
+
+  clearBtn.addEventListener('click', () => {
+    localStorage.removeItem(playlistKey);
+    localStorage.removeItem(maskKey);
+    tracks.length = 0;
+    list.innerHTML = '';
+    player.removeAttribute('src');
+    maskPlayer.removeAttribute('src');
+  });
+
+  player.addEventListener('ended', playNextTrack); // AUTO-ADVANCE
+  loadPlaylist();
+  loadMaskTrack();
+}
+
