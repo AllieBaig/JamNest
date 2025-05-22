@@ -1,0 +1,32 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#1a1a1a" />
+  <title>JamNest</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="styles/main.css" />
+  <link rel="stylesheet" href="styles/dark.css" media="(prefers-color-scheme: dark)" />
+</head>
+<body>
+  <nav>
+    <button data-mode="default">Playlist Mode</button>
+    <button data-mode="subliminal">Subliminal Mode</button>
+    <button id="toggle-theme">Dark/Light</button>
+  </nav>
+
+  <main id="app" aria-live="polite">
+    <p>Loading JamNest...</p>
+  </main>
+
+  <footer>
+    <small>JamNest v1.0 — <button id="reset-sw">Reset SW</button></small>
+  </footer>
+
+  <script type="module" src="scripts/main.js"></script>
+</body>
+</html>
+
