@@ -1,0 +1,11 @@
+
+
+/* Additional dark mode adjustments if needed */
+body.dark nav {
+  background: #222;
+}
+body.dark input, body.dark audio {
+  background: #333;
+  color: #fff;
+}
+
