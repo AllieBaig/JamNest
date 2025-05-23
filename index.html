@@ -5,25 +5,28 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>JamNest</title>
 
-  <!-- Theme + PWA -->
+  <!-- PWA -->
   <link rel="manifest" href="manifest.json" />
   <meta name="theme-color" content="#1a1a1a" />
+  <link rel="apple-touch-icon" href="assets/icons/icon-512.png" />
+  <link rel="icon" href="assets/icons/icon-192.png" />
+
+  <!-- Styles -->
   <link rel="stylesheet" href="styles/main.css" />
   <link rel="stylesheet" href="styles/themes.css" />
-
-  <!-- Icons -->
-  <link rel="icon" href="assets/icons/icon-192.png" />
-  <link rel="apple-touch-icon" href="assets/icons/icon-512.png" />
-
-  <!-- Offline fallback (optional) -->
-  <meta name="apple-mobile-web-app-capable" content="yes" />
 </head>
 <body>
 
-  <!-- Navigation -->
-  <nav role="navigation" aria-label="Main navigation">
-    <button data-mode="playlist">Playlist Mode</button>
+  <!-- Navigation / Controls -->
+  <nav role="navigation" aria-label="App controls">
+    <!-- Mode Switcher -->
+    <div class="mode-buttons">
+      <button data-mode="dual">Dual Music</button>
+      <button data-mode="subliminal">Subliminal Mode</button>
+      <button data-mode="playlist">Playlist Manager</button>
+    </div>
 
+    <!-- Theme Selector -->
     <label for="themeSelect">Theme:</label>
     <select id="themeSelect">
       <optgroup label="Festival Themes">
@@ -48,6 +51,7 @@
     </select>
     <button id="surpriseTheme">Surprise Me!</button>
 
+    <!-- Font Size -->
     <label for="fontSizeSelect">Font Size:</label>
     <select id="fontSizeSelect">
       <option value="0.85">Small</option>
@@ -57,15 +61,29 @@
     </select>
   </nav>
 
-  <!-- App Content -->
+  <!-- App Mount -->
   <main id="app" aria-live="polite" tabindex="-1">
     <p>Loading JamNest...</p>
   </main>
 
-  <!-- Theme History (Live Tracker) -->
+  <!-- Theme History Tracker -->
   <section id="themeHistory" aria-label="Theme history">
     <strong>Themes used this session:</strong>
     <ul id="themeHistoryList"></ul>
+  </section>
+
+  <!-- Install Prompt -->
+  <button id="installBtn" hidden>Install JamNest</button>
+
+  <!-- Debug Panel (appears with ?debug) -->
+  <section id="debugPanel" hidden aria-label="Developer Tools">
+    <details>
+      <summary>Debug Panel</summary>
+      <p><strong>Theme:</strong> <span id="debugTheme"></span></p>
+      <p><strong>Font:</strong> <span id="debugFont"></span></p>
+      <p><strong>Version:</strong> <span id="debugVersion"></span></p>
+      <button onclick="localStorage.clear(); location.reload();">Clear Storage</button>
+    </details>
   </section>
 
   <!-- Footer -->
@@ -73,7 +91,7 @@
     <small>JamNest <span id="appVersion">v0.0</span></small>
   </footer>
 
-  <!-- Entry Script -->
+  <!-- App Entry -->
   <script type="module" src="scripts/main.js"></script>
 </body>
 </html>
