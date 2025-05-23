@@ -1,0 +1,100 @@
+
+
+/* MIT License - 2025 AllieBaig */
+/* JamNest Theme Variables - Festival + National Styles */
+
+/* ================
+   DEFAULT THEME
+=================== */
+:root {
+  --bg-color: #ffffff;
+  --text-color: #1a1a1a;
+  --accent-color: #007bff;
+  --button-bg: var(--accent-color);
+  --button-text: #ffffff;
+}
+
+/* ================
+   FESTIVAL THEMES
+=================== */
+body.theme-diwali {
+  --bg-color: #2b0a14;
+  --text-color: #fbe8d3;
+  --accent-color: #ff9800;
+}
+
+body.theme-eid {
+  --bg-color: #0f2f2f;
+  --text-color: #e0f5dc;
+  --accent-color: #4caf50;
+}
+
+body.theme-hanukkah {
+  --bg-color: #e8f0ff;
+  --text-color: #002b5c;
+  --accent-color: #6ba4ff;
+}
+
+body.theme-holi {
+  --bg-color: #fff0f5;
+  --text-color: #4a004a;
+  --accent-color: #ff69b4;
+}
+
+body.theme-lunar {
+  --bg-color: #2c0a0a;
+  --text-color: #ffebb5;
+  --accent-color: #d62828;
+}
+
+body.theme-christmas {
+  --bg-color: #1c2d1c;
+  --text-color: #ffffff;
+  --accent-color: #e63946;
+}
+
+/* ================
+   NATIONAL THEMES
+=================== */
+body.theme-india {
+  --bg-color: #fff8e1;
+  --text-color: #1b5e20;
+  --accent-color: #ff6f00;
+}
+
+body.theme-pakistan {
+  --bg-color: #e8f5e9;
+  --text-color: #004d40;
+  --accent-color: #1b5e20;
+}
+
+body.theme-usa {
+  --bg-color: #f0f8ff;
+  --text-color: #00274d;
+  --accent-color: #c62828;
+}
+
+body.theme-france {
+  --bg-color: #fefefe;
+  --text-color: #002395;
+  --accent-color: #d90429;
+}
+
+body.theme-brazil {
+  --bg-color: #fffde7;
+  --text-color: #33691e;
+  --accent-color: #fbc02d;
+}
+
+body.theme-japan {
+  --bg-color: #ffffff;
+  --text-color: #b71c1c;
+  --accent-color: #d32f2f;
+}
+
+body.theme-nigeria {
+  --bg-color: #f1fff1;
+  --text-color: #1b5e20;
+  --accent-color: #66bb6a;
+}
+
