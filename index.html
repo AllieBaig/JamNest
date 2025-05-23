@@ -3,54 +3,74 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <meta name="theme-color" content="#1a1a1a" />
   <title>JamNest</title>
 
-  <!-- PWA Manifest -->
+  <!-- Theme + PWA -->
   <link rel="manifest" href="manifest.json" />
-  <meta name="apple-mobile-web-app-capable" content="yes" />
-  <meta name="apple-mobile-web-app-title" content="JamNest" />
+  <meta name="theme-color" content="#1a1a1a" />
+  <link rel="stylesheet" href="styles/main.css" />
+  <link rel="stylesheet" href="styles/themes.css" />
 
   <!-- Icons -->
-  <link rel="icon" href="assets/icons/icon-192.png" sizes="192x192" />
+  <link rel="icon" href="assets/icons/icon-192.png" />
   <link rel="apple-touch-icon" href="assets/icons/icon-512.png" />
 
-  <!-- Styles -->
-  <link rel="stylesheet" href="styles/main.css" />
-  <link rel="stylesheet" href="styles/dark.css" media="(prefers-color-scheme: dark)" />
-
-  <!-- Accessibility Helpers -->
-  <style>
-    .sr-only {
-      position: absolute;
-      left: -9999px;
-      top: auto;
-      width: 1px;
-      height: 1px;
-      overflow: hidden;
-    }
-  </style>
+  <!-- Offline fallback (optional) -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
 </head>
 <body>
 
-  <!-- Navigation (Mode Switcher) -->
+  <!-- Navigation -->
   <nav role="navigation" aria-label="Main navigation">
-    <button data-mode="playlist">Playlist Manager</button>
-    <button data-mode="subliminal">Subliminal Mode</button>
-    <button id="toggle-theme">Dark / Light</button>
+    <button data-mode="playlist">Playlist Mode</button>
+
+    <label for="themeSelect">Theme:</label>
+    <select id="themeSelect">
+      <optgroup label="Festival Themes">
+        <option value="">Default</option>
+        <option value="diwali">Diwali</option>
+        <option value="eid">Eid</option>
+        <option value="hanukkah">Hanukkah</option>
+        <option value="holi">Holi</option>
+        <option value="lunar">Lunar New Year</option>
+        <option value="christmas">Christmas</option>
+      </optgroup>
+      <optgroup label="National Themes">
+        <option value="india">India</option>
+        <option value="pakistan">Pakistan</option>
+        <option value="usa">USA</option>
+        <option value="france">France</option>
+        <option value="brazil">Brazil</option>
+        <option value="japan">Japan</option>
+        <option value="nigeria">Nigeria</option>
+      </optgroup>
+      <option value="random">Randomize</option>
+    </select>
+    <button id="surpriseTheme">Surprise Me!</button>
+
+    <label for="fontSizeSelect">Font Size:</label>
+    <select id="fontSizeSelect">
+      <option value="0.85">Small</option>
+      <option value="1">Normal</option>
+      <option value="1.25">Large</option>
+      <option value="1.5">XL</option>
+    </select>
   </nav>
 
-  <!-- App Mount Point -->
+  <!-- App Content -->
   <main id="app" aria-live="polite" tabindex="-1">
     <p>Loading JamNest...</p>
   </main>
 
+  <!-- Theme History (Live Tracker) -->
+  <section id="themeHistory" aria-label="Theme history">
+    <strong>Themes used this session:</strong>
+    <ul id="themeHistoryList"></ul>
+  </section>
+
   <!-- Footer -->
   <footer>
-    <small>
-      JamNest v1.0 —
-      <button id="reset-sw" aria-label="Reset service worker">Reset SW</button>
-    </small>
+    <small>JamNest <span id="appVersion">v0.0</span></small>
   </footer>
 
   <!-- Entry Script -->
